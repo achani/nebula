@@ -274,7 +274,7 @@ services:
   # 9. Spark (Job Execution)
   # ==========================================
   spark-master:
-    image: apache/spark:3.5.1
+    image: bitnamilegacy/spark:3.5
     container_name: nebula-spark-master
     environment:
       - SPARK_MODE=master
@@ -292,7 +292,7 @@ services:
       retries: 5
 
   spark-worker:
-    image: apache/spark:3.5.1
+    image: bitnamilegacy/spark:3.5
     container_name: nebula-spark-worker
     depends_on:
       - spark-master
