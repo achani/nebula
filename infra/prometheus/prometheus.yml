@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'nebula-services'
+    metrics_path: '/actuator/prometheus'
+    # We will add services here as we build them out in the phases
+    static_configs:
+      - targets: 
+          # - 'api-gateway:8080'
+          # - 'catalog-service:8080'
+          # - 'authpolicy-service:8080'
+          # - 'dataset-service:8080'
+          # - 'code-service:8080'
+          # - 'build-service:8080'
+          # - 'scheduling-service:8080'
+          # - 'notification-service:8080'

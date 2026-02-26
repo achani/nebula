@@ -1,0 +1,44 @@
+apiVersion: v2
+name: nebula
+description: Nebula Platform Umbrella Chart
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+dependencies:
+  - name: api-gateway
+    version: 0.1.0
+    repository: "file://../api-gateway"
+    condition: api-gateway.enabled
+  - name: catalog-service
+    version: 0.1.0
+    repository: "file://../catalog-service"
+    condition: catalog-service.enabled
+  - name: dataset-service
+    version: 0.1.0
+    repository: "file://../dataset-service"
+    condition: dataset-service.enabled
+  - name: build-service
+    version: 0.1.0
+    repository: "file://../build-service"
+    condition: build-service.enabled
+  - name: code-service
+    version: 0.1.0
+    repository: "file://../code-service"
+    condition: code-service.enabled
+  - name: scheduling-service
+    version: 0.1.0
+    repository: "file://../scheduling-service"
+    condition: scheduling-service.enabled
+  - name: authpolicy-service
+    version: 0.1.0
+    repository: "file://../authpolicy-service"
+    condition: authpolicy-service.enabled
+  - name: config-service
+    version: 0.1.0
+    repository: "file://../config-service"
+    condition: config-service.enabled
+  - name: notification-service
+    version: 0.1.0
+    repository: "file://../notification-service"
+    condition: notification-service.enabled

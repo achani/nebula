@@ -1,0 +1,32 @@
+version: '3.8'
+
+# dev-lite profile: removes heavy logging and secondary node services to run on 8GB RAM
+
+services:
+  # Reduce Kafka footprint
+  kafka:
+    environment:
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
+  
+  zookeeper:
+    environment:
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms256M"
+
+  # Disable Loki and Promtail
+  loki:
+    profiles:
+      - donotstart
+  
+  promtail:
+    profiles:
+      - donotstart
+
+  # Disable Vault
+  vault:
+    profiles:
+      - donotstart
+
+  # Disable Spark Worker (run Spark jobs strictly in local[*] mode inside build-service driver)
+  spark-worker:
+    profiles:
+      - donotstart

@@ -1,0 +1,26 @@
+# Default values for nebula umbrella chart.
+
+api-gateway:
+  enabled: true
+catalog-service:
+  enabled: true
+dataset-service:
+  enabled: true
+build-service:
+  enabled: true
+code-service:
+  enabled: true
+scheduling-service:
+  enabled: true
+authpolicy-service:
+  enabled: true
+config-service:
+  enabled: true
+notification-service:
+  enabled: true
+
+global:
+  domain: nebula.local
+  image:
+    registry: ghcr.io/nebula
+    pullPolicy: IfNotPresent
