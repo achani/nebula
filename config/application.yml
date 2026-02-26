@@ -1,0 +1,46 @@
+# Global configuration inherited by ALL Spring Boot microservices
+# Services will fetch this via Spring Cloud Config Server
+
+spring:
+  kafka:
+    bootstrap-servers: kafka:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      auto-offset-reset: earliest
+    properties:
+      schema.registry.url: http://schema-registry:8081
+      specific.avro.reader: true
+
+  # JWT parsing defaults for Spring Security Resource Server
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/nebula
+          jwk-set-uri: http://keycloak:8080/realms/nebula/protocol/openid-connect/certs
+
+eureka:
+  client:
+    # We use Istio for service discovery, not Eureka
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+# JSON structured logging pattern for Loki/Promtail
+logging:
+  pattern:
+    console: '{"@timestamp":"%d{yyyy-MM-dd''T''HH:mm:ss.SSSZ}","level":"%level","thread":"%thread","logger":"%logger{36}","message":"%msg","service":"${spring.application.name}","trace_id":"%X{trace_id}","span_id":"%X{span_id}","correlation_id":"%X{correlation_id}"}%n'

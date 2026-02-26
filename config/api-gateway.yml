@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: catalog-service
+          uri: http://catalog-service:8080
+          predicates:
+            - Path=/api/catalog/**
+        - id: dataset-service
+          uri: http://dataset-service:8080
+          predicates:
+            - Path=/api/datasets/**
+        - id: build-service
+          uri: http://build-service:8080
+          predicates:
+            - Path=/api/builds/**, /ws/builds/**
+        - id: scheduling-service
+          uri: http://scheduling-service:8080
+          predicates:
+            - Path=/api/schedules/**
+        - id: code-service
+          uri: http://code-service:8080
+          predicates:
+            - Path=/api/repos/**
