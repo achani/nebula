@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package nebula.authpolicy;
+
+option java_multiple_files = true;
+option java_package = "com.nebula.authpolicy.grpc";
+option java_outer_classname = "AuthPolicyProto";
+
+service AuthPolicyService {
+    rpc Authorize (AuthorizeRequest) returns (AuthorizeResponse);
+}
+
+message AuthorizeRequest {
+    string user_id = 1;
+    repeated string roles = 2;   // injected by API Gateway / extracted from JWT
+    string action = 3;           // e.g., "create_project", "delete_project"
+    string resource = 4;         // e.g., "project", "folder", "dataset"
+    map<string, string> context = 5; // e.g., {"project_id": "123"}
+}
+
+message AuthorizeResponse {
+    bool allowed = 1;
+    string reason = 2;
+}

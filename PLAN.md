@@ -302,6 +302,28 @@ curl -X POST http://localhost:8090/api/schedules \
 
 ---
 
+## Phase 10 — Infrastructure & Kubernetes Deployment
+
+**Goal:** Transition the platform from local `docker-compose` to a production-ready Kubernetes cluster using Helm and Istio.
+
+### Key Deliverables
+- **Helm Umbrella Chart:** Create `infra/helm/nebula` to deploy the entire stack (all services, PostgreSQL, Kafka, MinIO, Keycloak).
+- **Service Mesh (Istio):** 
+  - Deploy Istio sidecars to all pods.
+  - Configure `PeerAuthentication` for strict mTLS between services.
+  - Configure `Gateway` and `VirtualService` for the `api-gateway` ingress.
+- **Resource Management:** Define CPU/Memory requests and limits, and configure `HorizontalPodAutoscaler` (HPA) for services.
+- **Secrets Management:** Integrate K8s Secrets (or Vault integration) into the Helm deployments.
+
+### Test Gate
+- Successfully `helm install` the entire platform into a local `minikube` or `kind` cluster.
+- Verify mTLS by attempting to curl a backend service directly from a pod without a sidecar (should fail).
+- Verify end-to-end functionality (create project, create dataset, run job) through the K8s ingress.
+
+**Git tag:** `v1.0.0` (First Major Release)
+
+---
+
 ## Rollback Strategy
 
 | Mechanism | How |
@@ -353,3 +375,4 @@ docker-compose up -d
 | 7 | Micro-frontend architecture, Module Federation, real-time UI with WebSockets |
 | 8 | Distributed schedulers, Quartz clustering, event-driven job triggers |
 | 9 | Chaos engineering, Istio traffic policies, Resilience4j tuning, SRE alerting |
+| 10 | Kubernetes deployments, Helm umbrella charts, Istio Service Mesh (mTLS, Ingress) |

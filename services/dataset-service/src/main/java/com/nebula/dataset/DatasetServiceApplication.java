@@ -1,4 +1,4 @@
-package com.nebula.catalog;
+package com.nebula.dataset;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,10 +9,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
     SecurityAutoConfiguration.class,
     ManagementWebSecurityAutoConfiguration.class
 })
-public class CatalogServiceApplication {
+public class DatasetServiceApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(CatalogServiceApplication.class, args);
+    SpringApplication.run(DatasetServiceApplication.class, args);
   }
 
 }

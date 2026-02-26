@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: dataset-service
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}"
+
+grpc:
+  client:
+    authpolicy-service:
+      address: 'static://authpolicy-service:9090'
+      negotiation-type: plaintext
+
+spark:
+  master: "local[*]"
+  driver:
+    memory: "1g"
+    host: "127.0.0.1"
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  accessKey: ${MINIO_ACCESS_KEY:minioadmin}
+  secretKey: ${MINIO_SECRET_KEY:minioadmin}
+
+logging:
+  level:
+    org.apache.spark: WARN
+    org.apache.hadoop: WARN
+    io.delta: WARN

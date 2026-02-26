@@ -187,6 +187,7 @@ Each `services/<name>/` follows:
 5. **Observe:** Ensure every new code path emits: (a) a structured log line, (b) an OTel span, and (c) a Micrometer metric counter/timer.
 6. **Git:** Commit ONLY after tests pass. Format: `feat(scope): description` (Conventional Commits). Scope = service name (e.g., `feat(build-service): add spark job streaming`).
 7. **Handoff:** Ask: "Step [X] complete. Proceed to [Y]?"
+8. **Artifact Persistence:** All implementation plans, task lists, and verification walkthroughs MUST be saved directly into the repository under `docs/plans/` and `docs/walkthroughs/` for the corresponding phase (e.g., `docs/plans/phase-X-plan.md`, `docs/plans/phase-X-tasks.md`, `docs/walkthroughs/phase-X-walkthrough.md`). Do not leave them only in the agent's ephemeral memory.
 
 ---
 

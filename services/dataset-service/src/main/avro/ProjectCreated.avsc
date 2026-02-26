@@ -1,0 +1,11 @@
+{
+  "namespace": "com.nebula.catalog.event.avro",
+  "type": "record",
+  "name": "ProjectCreated",
+  "fields": [
+    {"name": "id", "type": "string"},
+    {"name": "name", "type": "string"},
+    {"name": "createdBy", "type": "string"},
+    {"name": "timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}}
+  ]
+}

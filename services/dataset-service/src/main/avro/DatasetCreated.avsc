@@ -1,0 +1,14 @@
+{
+  "namespace": "com.nebula.dataset.event.avro",
+  "type": "record",
+  "name": "DatasetCreated",
+  "fields": [
+    {"name": "eventId", "type": "string"},
+    {"name": "datasetId", "type": "string"},
+    {"name": "projectId", "type": "string"},
+    {"name": "name", "type": "string"},
+    {"name": "format", "type": "string"},
+    {"name": "path", "type": "string"},
+    {"name": "timestamp", "type": "long", "logicalType": "timestamp-millis"}
+  ]
+}

@@ -1,0 +1,29 @@
+# Phase 4 - Dataset Service Implementation Tasks
+
+- [x] Write `docs/adr/ADR-005-embedded-spark.md` for Embedded Spark vs Remote Spark
+- [x] Create Avro schemas (`schema-registry/`)
+  - [x] `DatasetCreated.avsc`
+  - [x] `DatasetUpdated.avsc`
+  - [x] `SchemaChanged.avsc`
+  - [x] `ProjectDeleted.avsc`
+- [x] Bootstrap `services/dataset-service`
+  - [x] `build.gradle` with Spring Boot 3, Spark 3.5, Delta Lake, MinIO, Kafka, PostgreSQL, etc.
+  - [x] Configure `application.yml` and `bootstrap.yml`
+- [x] Implement Domain Model & Persistence
+  - [x] `Dataset`, `DatasetVersion`, `SchemaSnapshot` entity classes
+  - [x] Flyway migrations for `dataset` schema
+  - [x] Spring Data JDBC / JPA repositories
+- [x] Implement Delta Lake Integration
+  - [x] Configure local embedded `SparkSession` with S3A (MinIO) support
+  - [x] Implement operations: read schema, list versions, read version, write dataset metadata
+- [x] Implement Kafka Integration
+  - [x] Producer for dataset events
+  - [x] Consumer for `ProjectDeleted` (cascade delete datasets)
+- [x] Implement REST API
+  - [x] `DatasetController` (create, read, delete, list versions, time-travel read)
+  - [x] Call AuthPolicy Service for permissions
+- [x] Testing & Helm
+  - [x] Testcontainers integration tests (Kafka, PostgreSQL, MinIO)
+  - [x] Implement `infra/helm/dataset-service` Helm chart
+  - [x] Route `api-gateway` to `dataset-service`
+  - [x] Add dataset-service to docker-compose.yml

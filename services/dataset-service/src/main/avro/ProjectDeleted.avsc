@@ -1,0 +1,10 @@
+{
+  "namespace": "com.nebula.catalog.event.avro",
+  "type": "record",
+  "name": "ProjectDeleted",
+  "fields": [
+    {"name": "eventId", "type": "string"},
+    {"name": "projectId", "type": "string"},
+    {"name": "timestamp", "type": "long", "logicalType": "timestamp-millis"}
+  ]
+}

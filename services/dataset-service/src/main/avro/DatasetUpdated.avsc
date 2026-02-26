@@ -1,0 +1,12 @@
+{
+  "namespace": "com.nebula.dataset.event.avro",
+  "type": "record",
+  "name": "DatasetUpdated",
+  "fields": [
+    {"name": "eventId", "type": "string"},
+    {"name": "datasetId", "type": "string"},
+    {"name": "projectId", "type": "string"},
+    {"name": "version", "type": "long"},
+    {"name": "timestamp", "type": "long", "logicalType": "timestamp-millis"}
+  ]
+}

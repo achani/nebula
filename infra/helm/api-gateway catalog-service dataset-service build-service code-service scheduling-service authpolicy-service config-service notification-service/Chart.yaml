@@ -1,6 +1,0 @@
-apiVersion: v2
-name: api-gateway catalog-service dataset-service build-service code-service scheduling-service authpolicy-service config-service notification-service
-description: A Helm chart for api-gateway catalog-service dataset-service build-service code-service scheduling-service authpolicy-service config-service notification-service
-type: application
-version: 0.1.0
-appVersion: "1.16.0"

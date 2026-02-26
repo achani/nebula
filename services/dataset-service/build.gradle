@@ -1,0 +1,158 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.4'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id "com.github.davidmc24.gradle.plugin.avro" version "1.9.1"
+	id 'com.google.protobuf' version '0.9.4'
+}
+
+group = 'com.nebula'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '21'
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		url "https://packages.confluent.io/maven/"
+	}
+}
+
+ext {
+	set('springCloudVersion', "2023.0.1")
+	set('grpcVersion', '1.62.2')
+	set('sparkVersion', '3.5.0')
+	set('deltaVersion', '3.1.0')
+}
+
+dependencies {
+    implementation "net.devh:grpc-client-spring-boot-starter:3.1.0.RELEASE"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	
+	// Config Client & Cloud
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	
+	// Database
+	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.flywaydb:flyway-core'
+	
+	// Kafka & Avro
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'io.confluent:kafka-avro-serializer:7.5.0'
+	implementation 'org.apache.avro:avro:1.11.3'
+
+	// gRPC
+	implementation 'net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE'
+	implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+	implementation "io.grpc:grpc-stub:${grpcVersion}"
+	implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1' 
+
+	// Metrics
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+	// Resilience
+	implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.2.0'
+
+	// Embedded Spark & Delta Lake
+	implementation("org.apache.spark:spark-sql_2.12:${sparkVersion}") {
+		exclude group: 'org.slf4j'
+		exclude group: 'log4j'
+		exclude group: 'org.apache.logging.log4j'
+        exclude group: 'org.glassfish.jersey.core'
+        exclude group: 'org.glassfish.jersey.containers'
+        exclude group: 'org.glassfish.jersey.inject'
+        // Spring Boot provides a newer jackson version that clashes with spark
+        exclude group: 'com.fasterxml.jackson.core'
+        exclude group: 'com.fasterxml.jackson.module'
+        exclude group: 'com.fasterxml.jackson.datatype'
+	}
+	implementation("io.delta:delta-spark_2.12:${deltaVersion}") {
+		exclude group: 'org.slf4j'
+	}
+    implementation "org.apache.hadoop:hadoop-aws:3.3.4"
+    implementation "com.amazonaws:aws-java-sdk-bundle:1.12.262"
+	implementation 'org.scala-lang:scala-library:2.12.18'
+	implementation 'com.fasterxml.jackson.module:jackson-module-scala_2.12:2.14.3'
+	
+	// Utilities
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+
+	// Testing
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.testcontainers:kafka'
+	testImplementation 'org.testcontainers:minio:1.19.7'
+	testImplementation 'io.rest-assured:rest-assured:5.4.0'
+    testImplementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+    testImplementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+	testImplementation 'javax.servlet:javax.servlet-api:4.0.1'
+	testImplementation 'io.dropwizard.metrics:metrics-core:4.2.25'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "com.fasterxml.jackson:jackson-bom:2.14.3"
+	}
+}
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:3.25.1"
+	}
+	plugins {
+		grpc {
+			artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+		}
+	}
+	generateProtoTasks {
+		all()*.plugins {
+			grpc {}
+		}
+	}
+}
+
+// Ensure java compile tasks depend on protobuf generation
+tasks.named('compileJava') {
+	dependsOn 'generateProto'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+    jvmArgs(
+        '--add-opens=java.base/java.lang=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang.invoke=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
+        '--add-opens=java.base/java.io=ALL-UNNAMED',
+        '--add-opens=java.base/java.net=ALL-UNNAMED',
+        '--add-opens=java.base/java.nio=ALL-UNNAMED',
+        '--add-opens=java.base/java.util=ALL-UNNAMED',
+        '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED',
+        '--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED',
+        '--add-opens=java.base/sun.nio.ch=ALL-UNNAMED',
+        '--add-opens=java.base/sun.nio.cs=ALL-UNNAMED',
+        '--add-opens=java.base/sun.security.action=ALL-UNNAMED',
+        '--add-opens=java.base/sun.util.calendar=ALL-UNNAMED',
+        '--add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED'
+    )
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.fasterxml.jackson.module:jackson-module-scala_2.12:2.14.3'
+    }
+    exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-scala_2.13'
+}

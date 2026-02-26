@@ -1,0 +1,5 @@
+apiVersion: v2
+name: dataset-service
+description: A Helm chart for Nebula Catalog Service
+type: application
+version: 0.1.0

@@ -19,6 +19,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 })
 class ApiGatewayIntegrationTest {
 
+  @SuppressWarnings("resource")
   @Container
   static final KeycloakContainer keycloak = new KeycloakContainer("quay.io/keycloak/keycloak:24.0.0")
       .withRealmImportFile("nebula-realm.json");
