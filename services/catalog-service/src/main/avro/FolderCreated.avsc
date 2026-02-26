@@ -1,0 +1,13 @@
+{
+  "namespace": "com.nebula.catalog.event.avro",
+  "type": "record",
+  "name": "FolderCreated",
+  "fields": [
+    {"name": "id", "type": "string"},
+    {"name": "projectId", "type": "string"},
+    {"name": "parentId", "type": ["null", "string"], "default": null},
+    {"name": "name", "type": "string"},
+    {"name": "createdBy", "type": "string"},
+    {"name": "timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}}
+  ]
+}

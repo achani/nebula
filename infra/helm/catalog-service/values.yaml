@@ -1,0 +1,9 @@
+replicaCount: 2
+image:
+  repository: nebula-catalog-service
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 8080

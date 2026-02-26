@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package com.nebula.catalog.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.nebula.catalog.grpc";
+option java_outer_classname = "CatalogProto";
+
+service CatalogLookupService {
+    rpc lookupProject(LookupProjectRequest) returns (LookupProjectResponse) {}
+    rpc lookupFolder(LookupFolderRequest) returns (LookupFolderResponse) {}
+}
+
+message LookupProjectRequest {
+    string project_id = 1;
+}
+
+message LookupProjectResponse {
+    string id = 1;
+    string name = 2;
+}
+
+message LookupFolderRequest {
+    string folder_id = 1;
+}
+
+message LookupFolderResponse {
+    string id = 1;
+    string project_id = 2;
+    string name = 3;
+}

@@ -8,6 +8,7 @@ volumes:
   postgres_data:
   kafka_data:
   zookeeper_data:
+  zookeeper_log:
   minio_data:
   prometheus_data:
   grafana_data:
@@ -48,7 +49,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     volumes:
       - zookeeper_data:/var/lib/zookeeper/data
-      - zookeeper_data:/var/lib/zookeeper/log
+      - zookeeper_log:/var/lib/zookeeper/log
     networks:
       - nebula-net
     healthcheck:
@@ -339,6 +340,65 @@ services:
         condition: service_healthy
     ports:
       - "8090:8080" # Exposed on 8090 to avoid conflict with Keycloak on 8080
+    networks:
+      - nebula-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  catalog-service:
+    build:
+      context: ./services/catalog-service
+    container_name: nebula-catalog-service
+    environment:
+      - CONFIG_SERVER_URL=http://config-service:8888/
+    depends_on:
+      config-service:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+    ports:
+      - "8084:8080"
+    networks:
+      - nebula-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  opa:
+    image: openpolicyagent/opa:0.63.0
+    container_name: nebula-opa
+    ports:
+      - "8181:8181"
+    command: ["run", "--server", "--log-level=debug", "/policies"]
+    volumes:
+      - ./opa-policies:/policies
+    networks:
+      - nebula-net
+
+  authpolicy-service:
+    build:
+      context: ./services/authpolicy-service
+    container_name: nebula-authpolicy-service
+    environment:
+      - CONFIG_SERVER_URL=http://config-service:8888/
+      - OPA_URL=http://opa:8181/v1/data/nebula/authz
+    depends_on:
+      config-service:
+        condition: service_healthy
+      opa:
+        condition: service_started
+    ports:
+      - "8086:8080" # REST/Actuator
+      - "9091:9090" # gRPC
     networks:
       - nebula-net
     healthcheck:

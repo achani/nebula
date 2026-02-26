@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: catalog-service
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}"
+
+grpc:
+  client:
+    authpolicy-service:
+      address: 'static://authpolicy-service:9090'
+      negotiation-type: plaintext
