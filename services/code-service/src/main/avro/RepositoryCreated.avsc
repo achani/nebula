@@ -1,0 +1,26 @@
+{
+  "type": "record",
+  "name": "RepositoryCreated",
+  "namespace": "com.nebula.code.event.avro",
+  "fields": [
+    {
+      "name": "repositoryId",
+      "type": "string"
+    },
+    {
+      "name": "projectId",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    }
+  ]
+}

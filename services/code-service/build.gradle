@@ -1,0 +1,133 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.3'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id "com.github.davidmc24.gradle.plugin.avro" version "1.9.1"
+	id 'com.google.protobuf' version '0.9.4'
+}
+
+group = 'com.nebula'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '21'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://packages.confluent.io/maven/" }
+}
+
+ext {
+	set('springCloudVersion', "2023.0.0")
+	set('testcontainersVersion', "1.19.7")
+	set('jgitVersion', "6.9.0.202403050737-r")
+}
+
+dependencies {
+	// Spring Boot Core
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	
+	// Data & Persistence
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.flywaydb:flyway-core'
+
+	// Kafka & Avro
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.apache.avro:avro:1.11.3'
+	implementation 'io.confluent:kafka-avro-serializer:7.5.0'
+
+	// Spring Cloud (Config Server Client)
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bus-kafka'
+
+	// AuthPolicy gRPC Client
+	implementation 'net.devh:grpc-client-spring-boot-starter:3.0.0.RELEASE'
+	implementation "io.grpc:grpc-protobuf:1.62.2"
+	implementation "io.grpc:grpc-stub:1.62.2"
+	implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+	compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+    
+    // Resilience4j
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
+	// Observability (OTel & Micrometer)
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	// JGit (Git Manipulation)
+	implementation "org.eclipse.jgit:org.eclipse.jgit:${jgitVersion}"
+
+	// Docker API
+	implementation 'com.github.docker-java:docker-java:3.4.0'
+	implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.4.0'
+
+	// JAXB API (required for Hibernate/Jackson integration in Java 11+)
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+	// Utilities
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	// Testing
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.testcontainers:kafka'
+	testImplementation 'io.rest-assured:rest-assured:5.4.0'
+	testImplementation 'javax.xml.bind:jaxb-api:2.3.1'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+// The avro plugin automatically registers the generateAvroJava task
+sourceSets {
+    main {
+        java {
+            srcDir 'build/generated-main-avro-java'
+        }
+    }
+}
+
+// Protobuf generation (for AuthPolicy client)
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.1"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.62.2"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+sourceSets.main.java.srcDirs += 'build/generated/source/proto/main/java'
+sourceSets.main.java.srcDirs += 'build/generated/source/proto/main/grpc'
+
+// Ensure java compile tasks depend on protobuf generation
+tasks.named('compileJava') {
+	dependsOn 'generateProto'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

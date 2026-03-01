@@ -435,3 +435,32 @@ services:
       timeout: 5s
       retries: 5
 
+  code-service:
+    build:
+      context: ./services/code-service
+    container_name: nebula-code-service
+    environment:
+      - CONFIG_SERVER_URL=http://config-service:8888/
+      - DOCKER_NETWORK=foundry_nebula-net
+      - GIT_STORAGE_PATH=/var/nebula/git
+      - HOST_GIT_STORAGE_PATH=${PWD}/data/git
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/git:/var/nebula/git
+    depends_on:
+      config-service:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8087:8080"
+    networks:
+      - nebula-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+

@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: code-service
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}"
+
+server:
+  port: 8080
+
+grpc:
+  client:
+    authpolicy-service:
+      address: 'discovery:///authpolicy-service'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+# Git Storage mapping 
+nebula:
+  git:
+    storage-path: ${GIT_STORAGE_PATH:/var/nebula/git}
+  ide:
+    docker-host: ${DOCKER_HOST:unix:///var/run/docker.sock}
+    network-name: ${DOCKER_NETWORK:nebula_nebula-net}
+    # Where code-server should be accessible from the browser proxy
+    proxy-domain: ${IDE_PROXY_DOMAIN:localhost:8090/ide}

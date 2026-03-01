@@ -1,0 +1,39 @@
+# Phase 5 - Code Service Implementation Tasks
+
+- [ ] Write `docs/adr/ADR-006-code-server-lifecycle.md` (Completed)
+- [x] Create Avro schema `schema-registry/RepositoryCreated.avsc`
+- [x] Bootstrap `services/code-service`
+  - [x] `build.gradle` (Spring Boot, JGit, Docker API Client)
+  - [x] Configure `application.yml` and `bootstrap.yml`
+- [x] Implement Domain Model & Persistence
+  - [x] `Repository`, `IdeSession` entity classes
+  - [x] Flyway migrations (`V1__init_code_schema.sql`)
+- [x] Implement Git Management (JGit)
+  - [x] `GitManager.java` for init, status, log, tree parsing
+- [x] Implement IDE Orchestrator
+  - [x] Docker API client integration to launch `linuxserver/code-server`
+  - [x] Define dynamic port mapping strategy
+- [x] Implement REST API
+  - [x] `RepositoryController` (create, browse, history)
+  - [x] `IdeController` (launch, status)
+  - [x] Integrate AuthPolicy checks
+- [x] Configure API Gateway
+  - [x] Add `/api/repos/**` static route
+  - [x] Implement dynamic `/ide/{sessionId}` routing strategy
+- [x] Implement Workspace Frontend (`mfe-code`)
+  - [x] Bootstrap Vite/Webpack Module Federation remote
+  - [x] Build `RepositoryBrowser` UI
+  - [x] Build `IdeLauncher` UI
+  - [x] Register `mfe-code` with `workspace/shell`
+- [ ] Testing & Infrastructure
+  - [x] Unit & Integration Tests
+  - [x] Update `docker-compose.yml` (Network & Volume fixes)
+  - [x] Helm chart `infra/helm/code-service`
+- [x] Hardening & Stability
+  - [x] Fix Create Repository 500 errors (PostgreSQL schema fix)
+  - [x] Fix IDE Launch 500 errors (Network provider mismatch)
+  - [x] Implement Global 401 Unauthorized handling & auto-login
+  - [x] Fix Shell layout & MFE CSS encapsulation
+  - [x] Fix IDE "Refused to Connect" (Stale session cleanup)
+  - [x] Implement Git Workspace support (Non-bare worktrees)
+  - [x] Resolve Git "Unsafe Repository" ownership warnings

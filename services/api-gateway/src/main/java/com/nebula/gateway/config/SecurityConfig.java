@@ -18,10 +18,9 @@ public class SecurityConfig {
 
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-    http
-        .csrf(ServerHttpSecurity.CsrfSpec::disable)
+    http.csrf(ServerHttpSecurity.CsrfSpec::disable)
         .authorizeExchange(exchanges -> exchanges
-            .pathMatchers("/actuator/**").permitAll() // Let Prometheus scrape metrics
+            .pathMatchers(org.springframework.http.HttpMethod.OPTIONS).permitAll() // Allow CORS preflight requests
             .anyExchange().authenticated() // All other requests require a valid JWT
         )
         .oauth2ResourceServer(oauth2 -> oauth2
